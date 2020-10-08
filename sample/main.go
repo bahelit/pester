@@ -49,7 +49,7 @@ func main() {
 	{ // drop in replacement for http.Get and other client methods
 		resp, err := pester.Get(fmt.Sprintf("http://localhost:%d", port))
 		if err != nil {
-			log.Fatalf("error GETing default", err)
+			log.Fatalf("error GETing default - %v\n\n", err)
 		}
 		defer resp.Body.Close()
 
@@ -84,7 +84,7 @@ func main() {
 
 		resp, err := client.Get(fmt.Sprintf("http://localhost:%d", port))
 		if err != nil {
-			log.Fatalf("error GETing custom backoff\n\n", client.LogString())
+			log.Fatalf("error GETing custom backoff, %s\n\n", client.LogString())
 		}
 		defer resp.Body.Close()
 
@@ -164,15 +164,15 @@ func randoHandler(w http.ResponseWriter, r *http.Request) {
 	var code int
 	switch rand.Intn(10) {
 	case 0:
-		code = 404
+		code = http.StatusNotFound
 	case 1:
-		code = 400
+		code = http.StatusBadRequest
 	case 2:
-		code = 501
+		code = http.StatusNotImplemented
 	case 3:
-		code = 500
+		code = http.StatusInternalServerError
 	default:
-		code = 200
+		code = http.StatusOK
 	}
 
 	log.Printf("incoming request on :9000 - will return %d in %d ms", code, delay)
